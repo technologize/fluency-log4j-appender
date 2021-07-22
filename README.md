@@ -21,16 +21,16 @@ Add below to the appenders section.
  <Appenders>
   <Fluentd name="fluentd" tag="yourTag" >
    <!-- 
-				all fields are optional, fields name will be sent to fulentd as a key in json
-				Field value/pattern can follow the Pattern as specified in PatternLayout 
-			-->
+    all fields are optional, fields name will be sent to fulentd as a key in json
+    Field value/pattern can follow the Pattern as specified in PatternLayout 
+   -->
    <Field name="application">yourApplication</Field>
    <Field name="someOtherField">Otherfield %X{traceId}</Field>
    <Field name="lookupField" pattern="%N"/>   
    <!-- 
-				all settings are optional, see defaultFluency() for default values
-				you can add as may fields as you like (or none at all)
-			-->
+    all settings are optional, see defaultFluency() for default values
+    you can add as may fields as you like (or none at all)
+   -->
    <!-- <FluentdConfig/> -->
    <FluentdConfig 
     maxBufferSize="536870912"
