@@ -17,9 +17,12 @@ package io.github.technologize.log4j.appender.fluency.core;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -29,15 +32,15 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.pattern.NameAbbreviator;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.komamitsu.fluency.EventTime;
 import org.komamitsu.fluency.Fluency;
@@ -47,14 +50,15 @@ import org.komamitsu.fluency.Fluency;
  *
  */
 @Plugin(name = FluencyAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@PluginAliases({ "Fluentd", "AWSS3", "TreasureData" })
 public class FluencyAppender extends AbstractAppender {
 
 	public static final String PLUGIN_NAME = "Fluency";
 
 	private static final StatusLogger LOGGER = StatusLogger.getLogger();
+	private static final String UNKNOWN = "<unknown>";
 	
 	private static final NameAbbreviator abbreviator = NameAbbreviator.getAbbreviator("1.");
-	private static final FixedDateFormat timeStampFormatter = FixedDateFormat.create(FixedFormat.DEFAULT_NANOS);
 
 	private final Fluency fluency;
 	private final String tag;
@@ -71,12 +75,13 @@ public class FluencyAppender extends AbstractAppender {
 
 		for (Field field : fields) {
 			/* No Need to write values if key or value is blank */
-			if (field.getName() != null && field.getValue() != null && !field.getName().isEmpty()
-					&& !field.getValue().isEmpty()) {
-				PatternLayout valueLayout = PatternLayout.newBuilder().withPattern(field.getValue()).build();
+			if (Assert.isNonEmpty(field.getPattern()) && Assert.isNonEmpty(field.getName())) {				
+				PatternLayout valueLayout = PatternLayout.newBuilder().withPattern(field.getPattern()).build();
 				this.fieldsParams.put(field.getName(), valueLayout);
 			}
 		}
+		Assert.requireNonEmpty(fluencyConfig, "Config is required");
+
 		this.fluency = fluencyConfig.makeFluency();
 	}
 
@@ -91,9 +96,7 @@ public class FluencyAppender extends AbstractAppender {
 		
 		final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-		if (tag == null || tag.isEmpty()) {
-			throw new IllegalArgumentException("tag is required");
-		}
+		Assert.requireNonEmpty(tag, "tag is required");
 
 		if (layout == null) {
 			layout = PatternLayout.createDefaultLayout();
@@ -112,54 +115,50 @@ public class FluencyAppender extends AbstractAppender {
         String loggerName = logEvent.getLoggerName();
         String message = new String(this.getLayout().toByteArray(logEvent));
         
-        Map<String, Object> m = new HashMap<>();
-        m.put("level", level);
+        Map<String, Object> logEventData = new HashMap<>();
+        logEventData.put("level", level);
 
         StackTraceElement logSource = logEvent.getSource();       
         
-        if (logSource == null || logSource.getFileName() == null) {
-            m.put("sourceFile", "<unknown>");
-        } else {
-            m.put("sourceFile", logSource.getFileName());
-        }
-
-        if (logSource == null || logSource.getClassName() == null) {
-            m.put("sourceClass", "<unknown>");
-        } else {
-            m.put("sourceClass", logEvent.getSource().getClassName());
-        }
-
-        if (logSource == null || logSource.getMethodName() == null) {
-            m.put("sourceMethod", "<unknown>");
-        } else {
-            m.put("sourceMethod", logEvent.getSource().getMethodName());
-        }
-
-        if (logSource == null || logSource.getLineNumber() == 0) {
-            m.put("sourceLine", 0);
-        } else {
-            m.put("sourceLine", logEvent.getSource().getLineNumber());
-        }
+        
+        
+        if (Assert.isEmpty(logSource)) {
+        	logEventData.put("sourceFile", UNKNOWN);
+        	logEventData.put("sourceClass", UNKNOWN);
+        	logEventData.put("sourceMethod", UNKNOWN);
+        	logEventData.put("sourceLine", 0);
+		} else {
+			logEventData.put("sourceFile", Objects.requireNonNullElse(logSource.getFileName(), UNKNOWN));
+			logEventData.put("sourceClass", Objects.requireNonNullElse(logSource.getClassName(), UNKNOWN));
+			logEventData.put("sourceMethod", Objects.requireNonNullElse(logSource.getMethodName(), UNKNOWN));
+			logEventData.put("sourceLine", Objects.requireNonNullElse(logSource.getLineNumber(), 0));
+		}
 
         StringBuilder loggerNameBuilder = new StringBuilder();
     	abbreviator.abbreviate(loggerName, loggerNameBuilder);
-        m.put("logger", loggerNameBuilder.toString());
+        logEventData.put("logger", loggerNameBuilder.toString());
         
-        m.put("loggerFull", loggerName);
-        m.put("message", message);
-        m.put("thread", logEvent.getThreadName());
+        logEventData.put("loggerFull", loggerName);
+        logEventData.put("message", message);
+        logEventData.put("thread", logEvent.getThreadName());
         
         for (Entry<String, PatternLayout> fieldParam : this.fieldsParams.entrySet()) {
-			m.put(fieldParam.getKey(), fieldParam.getValue().toSerializable(logEvent));
+			logEventData.put(fieldParam.getKey(), fieldParam.getValue().toSerializable(logEvent));
 		}
-
-        m.put("@timestamp", timeStampFormatter.formatInstant(logEvent.getInstant()));
         
+		/*
+		 * Refer: https://www.elastic.co/guide/en/elasticsearch/reference/current/date.html
+		 * Format that supports nanos is strict_date_optional_time_nanos which is same as DateTimeFormatter.ISO_INSTANT
+		 */
+		logEventData.put("@timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant
+				.ofEpochSecond(logEvent.getInstant().getEpochSecond(), logEvent.getInstant().getNanoOfSecond())));
+                
         try {
-        	EventTime eventTime = EventTime.fromEpoch(logEvent.getInstant().getEpochMillisecond(), logEvent.getInstant().getNanoOfMillisecond());
-            this.fluency.emit(this.tag, eventTime, m);
+			EventTime eventTime = EventTime.fromEpoch(logEvent.getInstant().getEpochSecond(),
+					logEvent.getInstant().getNanoOfSecond());
+            this.fluency.emit(this.tag, eventTime, logEventData);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e);
         }
 	}
 }

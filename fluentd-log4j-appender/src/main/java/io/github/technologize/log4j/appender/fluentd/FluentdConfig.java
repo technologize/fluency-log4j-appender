@@ -18,12 +18,14 @@ package io.github.technologize.log4j.appender.fluentd;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.util.Assert;
 import org.komamitsu.fluency.Fluency;
 import org.komamitsu.fluency.fluentd.FluencyBuilderForFluentd;
 
@@ -33,8 +35,10 @@ import io.github.technologize.log4j.appender.fluency.core.FluencyConfig;
  * @author Bharat Gadde
  *
  */
-@Plugin(name = "Config", category = Core.CATEGORY_NAME, elementType = FluencyConfig.ELEMENT_TYPE, printObject = true)
+@Plugin(name = FluentdConfig.PLUGIN_TYPE, category = Core.CATEGORY_NAME, elementType = FluencyConfig.ELEMENT_TYPE, printObject = true)
 public class FluentdConfig implements FluencyConfig {
+	
+	public static final String PLUGIN_TYPE = "FluentdConfig";
 	
     private Server[] servers;
     private FluencyBuilderForFluentd fluencyBuilder;
@@ -42,21 +46,21 @@ public class FluentdConfig implements FluencyConfig {
     @PluginFactory
     public static FluentdConfig createFluencyConfig(
     		@PluginElement(Server.ELEMENT_TYPE) final Server[] servers,
-            @PluginAttribute("maxBufferSize") final Long maxBufferSize,
-            @PluginAttribute("bufferChunkInitialSize") final Integer bufferChunkInitialSize,
-            @PluginAttribute("bufferChunkRetentionSize") final Integer bufferChunkRetentionSize,
-            @PluginAttribute("bufferChunkRetentionTimeMillis") final Integer bufferChunkRetentionTimeMillis,
-            @PluginAttribute("flushAttemptIntervalMillis") final Integer flushAttemptIntervalMillis,
-            @PluginAttribute("waitUntilBufferFlushed") final Integer waitUntilBufferFlushed,
-            @PluginAttribute("waitUntilFlusherTerminated") final Integer waitUntilFlusherTerminated,
-            @PluginAttribute("senderMaxRetryCount") final Integer senderMaxRetryCount,
-            @PluginAttribute("senderBaseRetryIntervalMillis") final Integer senderBaseRetryIntervalMillis,
-            @PluginAttribute("senderMaxRetryIntervalMillis") final Integer senderMaxRetryIntervalMillis,
-            @PluginAttribute("connectionTimeoutMilli") final Integer connectionTimeoutMilli,
-            @PluginAttribute("readTimeoutMilli") final Integer readTimeoutMilli,
-            @PluginAttribute("ackResponseMode") final boolean ackResponseMode,
-            @PluginAttribute("sslEnabled") final boolean sslEnabled,
-            @PluginAttribute("jvmHeapBufferMode") final Boolean jvmHeapBufferMode,
+            @PluginAttribute(value= "maxBufferSize", defaultLong= 536870912) final long maxBufferSize,
+            @PluginAttribute(value= "bufferChunkInitialSize", defaultInt= 1048576) final int bufferChunkInitialSize,
+            @PluginAttribute(value= "bufferChunkRetentionSize", defaultInt= 4194304) final int bufferChunkRetentionSize,
+            @PluginAttribute(value= "bufferChunkRetentionTimeMillis", defaultInt= 1000) final int bufferChunkRetentionTimeMillis,
+            @PluginAttribute(value= "flushAttemptIntervalMillis", defaultInt= 600) final int flushAttemptIntervalMillis,
+            @PluginAttribute(value= "waitUntilBufferFlushed", defaultInt= 10) final int waitUntilBufferFlushed,
+            @PluginAttribute(value= "waitUntilFlusherTerminated", defaultInt= 10) final int waitUntilFlusherTerminated,
+            @PluginAttribute(value= "senderMaxRetryCount", defaultInt= 8) final int senderMaxRetryCount,
+            @PluginAttribute(value= "senderBaseRetryIntervalMillis", defaultInt= 400) final int senderBaseRetryIntervalMillis,
+            @PluginAttribute(value= "senderMaxRetryIntervalMillis", defaultInt= 30000) final int senderMaxRetryIntervalMillis,
+            @PluginAttribute(value= "connectionTimeoutMillis", defaultInt= 5000) final int connectionTimeoutMillis,
+            @PluginAttribute(value= "readTimeoutMillis", defaultInt= 5000) final int readTimeoutMillis,
+            @PluginAttribute(value= "ackResponseMode") final boolean ackResponseMode,
+            @PluginAttribute(value= "sslEnabled") final boolean sslEnabled,
+            @PluginAttribute(value= "jvmHeapBufferMode", defaultBoolean= true) final boolean jvmHeapBufferMode,
             @PluginAttribute("fileBackupDir") final String fileBackupDir) {
     	
     	FluentdConfig config = new FluentdConfig();
@@ -74,8 +78,8 @@ public class FluentdConfig implements FluencyConfig {
     	builder.setSenderMaxRetryCount(senderMaxRetryCount);
     	builder.setSenderBaseRetryIntervalMillis(senderBaseRetryIntervalMillis);
     	builder.setSenderMaxRetryIntervalMillis(senderMaxRetryIntervalMillis);
-    	builder.setConnectionTimeoutMilli(connectionTimeoutMilli);
-    	builder.setReadTimeoutMilli(readTimeoutMilli);
+    	builder.setConnectionTimeoutMilli(connectionTimeoutMillis);
+    	builder.setReadTimeoutMilli(readTimeoutMillis);
     	builder.setAckResponseMode(ackResponseMode);
     	builder.setSslEnabled(sslEnabled);
     	builder.setJvmHeapBufferMode(jvmHeapBufferMode);
@@ -84,11 +88,17 @@ public class FluentdConfig implements FluencyConfig {
     }
     
     public Fluency makeFluency() {
-    	List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
-    	for (Server server : servers) {
-			addresses.add(server.getAddress());
+    	FluencyBuilderForFluentd builder = Objects.requireNonNullElse(this.fluencyBuilder, new FluencyBuilderForFluentd());
+    	
+    	if (Assert.isNonEmpty(servers)) {
+        	List<InetSocketAddress> addresses = new ArrayList<>();
+			for (Server server : this.servers) {
+				addresses.add(server.getAddress());
+			}
+			return builder.build(addresses);
 		}
-    	return fluencyBuilder.build(addresses);
+    	
+    	return builder.build();
     }
 
 }

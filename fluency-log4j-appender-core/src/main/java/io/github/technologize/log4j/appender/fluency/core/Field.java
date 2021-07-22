@@ -21,47 +21,46 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * @author Bharat Gadde
  *
  */
-@Plugin(name = "Field", category = Node.CATEGORY, elementType = Field.ELEMENT_TYPE, printObject = true)
+@Plugin(name = Field.PLUGIN_NAME, category = Node.CATEGORY, elementType = Field.ELEMENT_TYPE, printObject = true)
 public class Field {
+
+	public static final String PLUGIN_NAME = "Field";
 	
 	public static final String ELEMENT_TYPE = "field";
 	
 	private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String name;
-    private final String value;
+    private final String pattern;
 
-    protected Field(final String name, final String value) {
+    protected Field(final String name, final String pattern) {
         this.name = name;
-        this.value = value;
+        this.pattern = pattern;
     }
-
-	public static Logger getLogger() {
-		return LOGGER;
-	}
 
 	public String getName() {
 		return name;
 	}
 
-	public String getValue() {
-		return value;
+	public String getPattern() {
+		return pattern;
 	}
 
 	@PluginFactory
     public static Field createStaticField(
             @PluginAttribute("name") final String name,
-            @PluginValue("value") final String value) {
-        if (name == null || name.isEmpty() ) {
+            @PluginValue("pattern") final String pattern) {
+        if (Assert.isEmpty(name) ) {
             LOGGER.error("Property name cannot be null");
         }
-        return new Field(name, value);
+        return new Field(name, pattern);
     }
 
 }

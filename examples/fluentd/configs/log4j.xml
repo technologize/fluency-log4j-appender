@@ -1,21 +1,4 @@
-# log4j appenders based on [fluency](https://github.com/komamitsu/fluency)
-Heavily inspired from [log4j-plugin-fluency](https://github.com/wycore/log4j-plugin-fluency) by 
-
-**Required:**
-
-`tag`
-
-To use these appenders, add `io.github.technologize` to `packages` in log4j's `Configuration`
-
-`log4j >= 2.11`
-
-
-Refer [examples](examples/)
-
-## Fluentd
-
-Add below to the appenders section.
-```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration strict="true" packages="io.github.technologize">
 
 	<Appenders>
@@ -56,15 +39,17 @@ Add below to the appenders section.
 						message will be sent to only one of them dependeing on availability
 				-->	
 				<Server host="localhost" port="24224" />
-				<Server host="127.0.0.1" port="24224" />
+				<Server host="127.0.0.1" port="24224" />				
 			</FluentdConfig>
 		</Fluentd>
 	</Appenders>
-	<Loggers>	
-		<Logger name="Name" level="debug">
-			<AppenderRef ref="fluentd" />
+
+	<Loggers>
+	
+		<Logger name="io.github.technologize" level="debug">
+			<AppenderRef ref="STDOUT" />
+			<AppenderRef ref="fluency" />
 		</Logger>
 	</Loggers>
 
 </Configuration>
-```

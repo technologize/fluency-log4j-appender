@@ -23,7 +23,7 @@ import org.komamitsu.fluency.Fluency;
  */
 public interface FluencyConfig {
 	
-	public static final String ELEMENT_TYPE = "fluencyConfig";
+	public static final String ELEMENT_TYPE = "config";
 
 	public Fluency makeFluency();
 	

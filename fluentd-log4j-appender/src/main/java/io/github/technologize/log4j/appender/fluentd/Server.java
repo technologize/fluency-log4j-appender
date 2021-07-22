@@ -29,8 +29,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @author Bharat Gadde
  *
  */
-@Plugin(name = "Server", category = Node.CATEGORY, elementType = Server.ELEMENT_TYPE, printObject = true)
+@Plugin(name = Server.PLUGIN_NAME, category = Node.CATEGORY, elementType = Server.ELEMENT_TYPE, printObject = true)
 public class Server {
+
+	public static final String PLUGIN_NAME = "Server";
 
 	public static final String ELEMENT_TYPE = "sever";
 	
