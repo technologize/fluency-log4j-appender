@@ -97,7 +97,6 @@ limitations under the License.
 						</goals>
 						<configuration>
 							<finalName>${project.artifactId}-all</finalName>
-							<outputDirectory>${project.build.directory}/releases</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
