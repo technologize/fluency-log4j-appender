@@ -92,11 +92,12 @@ limitations under the License.
 				<version>3.2.1</version>
 				<executions>
 					<execution>
+						<phase>package</phase>
 						<goals>
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<finalName>${project.artifactId}-all</finalName>
+							<outputFile>${project.build.directory}/${project.artifactId}-all.jar</outputFile>
 						</configuration>
 					</execution>
 				</executions>
