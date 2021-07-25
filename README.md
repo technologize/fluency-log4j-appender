@@ -22,16 +22,16 @@ Add below to the appenders section.
   <Fluentd name="fluentd" tag="yourTag" >
    <!-- 
     all fields are optional, fields name will be sent to fulentd as a key in json
-    Field value/pattern can follow the Pattern as specified in PatternLayout 
+    Field value/pattern can follow the Pattern as specified in PatternLayout  
+    Refer: https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout
    -->
    <Field name="application">yourApplication</Field>
    <Field name="someOtherField">Otherfield %X{traceId}</Field>
    <Field name="lookupField" pattern="%N"/>   
    <!-- 
-    all settings are optional, see defaultFluency() for default values
+    all settings are optional, see FluencyBuilderForFluentd().build(); for default values
     you can add as may fields as you like (or none at all)
    -->
-   <!-- <FluentdConfig/> -->
    <FluentdConfig 
     maxBufferSize="536870912"
     bufferChunkInitialSize="1048576"
@@ -62,7 +62,7 @@ Add below to the appenders section.
 
  <Loggers> 
   <root level="trace">
-   <appender-ref ref="fluency"/>
+   <appender-ref ref="fluentd"/>
  </root>
  </Loggers>
 </Configuration>

@@ -24,19 +24,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.pattern.NameAbbreviator;
 import org.apache.logging.log4j.core.util.Assert;
@@ -49,11 +41,7 @@ import org.komamitsu.fluency.Fluency;
  * @author Bharat Gadde
  *
  */
-@Plugin(name = FluencyAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
-@PluginAliases({ "Fluentd", "AWSS3", "TreasureData" })
 public class FluencyAppender extends AbstractAppender {
-
-	public static final String PLUGIN_NAME = "Fluency";
 
 	private static final StatusLogger LOGGER = StatusLogger.getLogger();
 	private static final String UNKNOWN = "<unknown>";
@@ -65,10 +53,15 @@ public class FluencyAppender extends AbstractAppender {
 	private final Map<String, PatternLayout> fieldsParams;
 	
 
-	private FluencyAppender(final String name, final String tag, final Field[] fields,
+	protected FluencyAppender(final String name, final String tag, final Field[] fields,
 			final FluencyConfig fluencyConfig, final Filter filter, final Layout<? extends Serializable> layout,
-			final boolean ignoreExceptions) {
-		super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
+			final String ignoreExceptions) {
+		
+		super(name, filter, Objects.requireNonNullElse(layout, PatternLayout.createDefaultLayout()),
+				Booleans.parseBoolean(ignoreExceptions, true), Property.EMPTY_ARRAY);
+		
+		/* Tag cannot be Empty */
+		Assert.requireNonEmpty(tag, "tag is required");
 		
 		this.tag = tag;
 		this.fieldsParams = new HashMap<>();
@@ -83,26 +76,6 @@ public class FluencyAppender extends AbstractAppender {
 		Assert.requireNonEmpty(fluencyConfig, "Config is required");
 
 		this.fluency = fluencyConfig.makeFluency();
-	}
-
-	@PluginFactory
-	public static FluencyAppender createAppender(@PluginAttribute("name") final String name,
-			@PluginAttribute("tag") @Required(message = "tag is required") final String tag,
-			@PluginAttribute("ignoreExceptions") final String ignore,
-			@PluginElement(Field.ELEMENT_TYPE) final Field[] fields,
-			@PluginElement(FluencyConfig.ELEMENT_TYPE) final FluencyConfig fluencyConfig,
-			@PluginElement(Layout.ELEMENT_TYPE) Layout<? extends Serializable> layout,
-			@PluginElement(Filter.ELEMENT_TYPE) final Filter filter) {
-		
-		final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-
-		Assert.requireNonEmpty(tag, "tag is required");
-
-		if (layout == null) {
-			layout = PatternLayout.createDefaultLayout();
-		}
-
-		return new FluencyAppender(name, tag, fields, fluencyConfig, filter, layout, ignoreExceptions);
 	}
 
 	@Override
