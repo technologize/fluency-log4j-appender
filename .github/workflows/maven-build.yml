@@ -1,6 +1,5 @@
 name: Maven Build
 on: 
-  push:
   pull_request:
   release:
   workflow_dispatch:
