@@ -1,4 +1,4 @@
-# log4j appenders for Fluentd, Aws S3
+# log4j2 appenders for Fluentd, Aws S3
 
 `Requires log4j >= 2.11`
 
