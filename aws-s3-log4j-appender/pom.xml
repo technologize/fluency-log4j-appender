@@ -79,6 +79,7 @@
 						<configuration>
 							<shadedArtifactAttached>true</shadedArtifactAttached>
 							<finalName>${project.artifactId}-all</finalName>
+							<outputDirectory>${project.build.directory}/releases</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
