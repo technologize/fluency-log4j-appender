@@ -24,6 +24,7 @@ limitations under the License.
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Fluency Log4j Appender Core</name>
 	<description>Log4j Appender Based on Fluency</description>
+	<url>https://github.com/technologize/fluency-log4j-appender</url>
 
 	<developers>
 		<developer>
@@ -39,6 +40,13 @@ limitations under the License.
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
+	<scm>
+        <connection>scm:git:https://github.com/technologize/fluency-log4j-appender.git</connection>
+        <url>https://github.com/technologize/fluency-log4j-appender.git</url>
+        <developerConnection>scm:git:https://github.com/technologize/fluency-log4j-appender.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
 	<dependencies>
 		<dependency>
@@ -73,5 +81,7 @@ limitations under the License.
 	<properties>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.compiler.source>1.7</maven.compiler.source>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 </project>
