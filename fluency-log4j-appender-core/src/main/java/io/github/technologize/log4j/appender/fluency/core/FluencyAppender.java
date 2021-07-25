@@ -131,7 +131,7 @@ public class FluencyAppender extends AbstractAppender {
 					logEvent.getInstant().getNanoOfSecond());
             this.fluency.emit(this.tag, eventTime, logEventData);
         } catch (IOException e) {
-            LOGGER.error(e);
+            LOGGER.error("Error while emitting message: {}", e.getMessage());
         }
 	}
 }
