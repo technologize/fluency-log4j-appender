@@ -1,20 +1,14 @@
-# log4j appenders based on [fluency](https://github.com/komamitsu/fluency)
+# log4j appenders for Fluentd, Aws S3
 
-Heavily inspired from [log4j-plugin-fluency](https://github.com/wycore/log4j-plugin-fluency) by
+`Requires log4j >= 2.11`
 
-**Required:**
+Add `io.github.technologize` to `packages` in log4j's `Configuration`
 
-`tag`
+## Sample log4j config
 
-To use these appenders, add `io.github.technologize` to `packages` in log4j's `Configuration`
+### Fluentd
 
-`log4j >= 2.11`
-
-Refer [examples](examples/)
-
-Sample log4j config
-
-## Fluentd
+`tag`: tag refers to tag of fluentd
 
 ```xml
 <Configuration strict="true" packages="io.github.technologize">
@@ -68,7 +62,9 @@ Sample log4j config
 </Configuration>
 ```
 
-## Aws S3
+### Aws S3
+
+`tag`: tag is the name of the Aws S3 bucket
 
 ```xml
 <Configuration strict="true" packages="io.github.technologize">
@@ -90,7 +86,8 @@ Sample log4j config
 
         formatTypes can be CSV, MESSAGE_PACK, JSONL(DEFAULT)
         formatCsvColumnNames are comma seperated Logging info to be present in CSV if format is CSV
-        zoneOffsetId for valid values Refer https://docs.oracle.com/javase/8/docs/api/java/time/ZoneOffset.html#of-java.lang.String-
+        zoneOffsetId for valid values Refer 
+          https://docs.oracle.com/javase/8/docs/api/java/time/ZoneOffset.html#of-java.lang.String-
       -->
       <AwsS3Config
         formatType= "JSONL"
@@ -127,3 +124,5 @@ Sample log4j config
   </Loggers>
 </Configuration>
 ```
+
+Based on [fluency](https://github.com/komamitsu/fluency). Inspired from [log4j-plugin-fluency](https://github.com/wycore/log4j-plugin-fluency)
