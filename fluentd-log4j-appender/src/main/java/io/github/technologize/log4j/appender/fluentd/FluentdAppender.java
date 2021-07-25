@@ -39,13 +39,37 @@ import io.github.technologize.log4j.appender.fluency.core.FluencyConfig;
 @Plugin(name = FluentdAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class FluentdAppender extends FluencyAppender {
 
+	/**
+	 * Fluentd plugin name
+	 */
 	public static final String PLUGIN_NAME = "Fluentd";
 
+	/**
+	 * Creates fluentd appender
+	 * @param name
+	 * @param tag
+	 * @param fields
+	 * @param fluentdConfig
+	 * @param filter
+	 * @param layout
+	 * @param ignoreExceptions
+	 */
 	protected FluentdAppender(String name, String tag, Field[] fields, FluencyConfig fluentdConfig, Filter filter,
 			Layout<? extends Serializable> layout, String ignoreExceptions) {
 		super(name, tag, fields, fluentdConfig, filter, layout, ignoreExceptions);
 	}
 
+	/**
+	 * Creates fluentd appender
+	 * @param name
+	 * @param tag
+	 * @param ignoreExceptions
+	 * @param fields
+	 * @param fluentdConfig
+	 * @param layout
+	 * @param filter
+	 * @return
+	 */
 	@PluginFactory
 	public static FluentdAppender createAppender(@PluginAttribute("name") final String name,
 			@PluginAttribute("tag") @Required(message = "tag is required") final String tag,
@@ -55,7 +79,7 @@ public class FluentdAppender extends FluencyAppender {
 			@PluginElement(Layout.ELEMENT_TYPE) Layout<? extends Serializable> layout,
 			@PluginElement(Filter.ELEMENT_TYPE) final Filter filter) {
 
-		FluencyConfig config = Objects.requireNonNullElse(fluentdConfig, new FluentdConfig());
+		FluencyConfig config = Objects.nonNull(fluentdConfig) ? fluentdConfig : new FluentdConfig();
 		return new FluentdAppender(name, tag, fields, config, filter, layout, ignoreExceptions);
 	}
 

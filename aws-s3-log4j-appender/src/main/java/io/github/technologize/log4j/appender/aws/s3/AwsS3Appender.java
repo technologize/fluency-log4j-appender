@@ -39,23 +39,46 @@ import io.github.technologize.log4j.appender.fluency.core.FluencyConfig;
 @Plugin(name = AwsS3Appender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class AwsS3Appender extends FluencyAppender {
 
+	/**
+	 * Aws S3 Plugin Name
+	 */
 	public static final String PLUGIN_NAME = "AwsS3";
 
+	/**
+	 * @param name
+	 * @param tag
+	 * @param fields
+	 * @param fluentdConfig
+	 * @param filter
+	 * @param layout
+	 * @param ignoreExceptions
+	 */
 	protected AwsS3Appender(String name, String tag, Field[] fields, FluencyConfig fluentdConfig, Filter filter,
 			Layout<? extends Serializable> layout, String ignoreExceptions) {
 		super(name, tag, fields, fluentdConfig, filter, layout, ignoreExceptions);
 	}
 
+	/**
+	 * Creates Appender
+	 * @param name
+	 * @param tag
+	 * @param ignoreExceptions
+	 * @param fields
+	 * @param awsS3Config
+	 * @param layout
+	 * @param filter
+	 * @return
+	 */
 	@PluginFactory
 	public static AwsS3Appender createAppender(@PluginAttribute("name") final String name,
 			@PluginAttribute("tag") @Required(message = "tag is required") final String tag,
 			@PluginAttribute("ignoreExceptions") final String ignoreExceptions,
 			@PluginElement(Field.ELEMENT_TYPE) final Field[] fields,
-			@PluginElement(FluencyConfig.ELEMENT_TYPE) final AwsS3Config fluentdConfig,
+			@PluginElement(FluencyConfig.ELEMENT_TYPE) final AwsS3Config awsS3Config,
 			@PluginElement(Layout.ELEMENT_TYPE) Layout<? extends Serializable> layout,
 			@PluginElement(Filter.ELEMENT_TYPE) final Filter filter) {
 
-		AwsS3Config config = Objects.requireNonNullElse(fluentdConfig, new AwsS3Config());
+		AwsS3Config config = Objects.nonNull(awsS3Config) ? awsS3Config : new AwsS3Config();
 		return new AwsS3Appender(name, tag, fields, config, filter, layout, ignoreExceptions);		
 	}
 }

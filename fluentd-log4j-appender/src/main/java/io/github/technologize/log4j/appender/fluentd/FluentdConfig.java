@@ -38,11 +38,34 @@ import io.github.technologize.log4j.appender.fluency.core.FluencyConfig;
 @Plugin(name = FluentdConfig.PLUGIN_TYPE, category = Core.CATEGORY_NAME, elementType = FluencyConfig.ELEMENT_TYPE, printObject = true)
 public class FluentdConfig implements FluencyConfig {
 	
+	/**
+	 * FluentdConfig plugin type
+	 */
 	public static final String PLUGIN_TYPE = "FluentdConfig";
 	
     private Server[] servers;
     private FluencyBuilderForFluentd fluencyBuilder;
     
+    /**
+     * @param servers
+     * @param maxBufferSize
+     * @param bufferChunkInitialSize
+     * @param bufferChunkRetentionSize
+     * @param bufferChunkRetentionTimeMillis
+     * @param flushAttemptIntervalMillis
+     * @param waitUntilBufferFlushed
+     * @param waitUntilFlusherTerminated
+     * @param senderMaxRetryCount
+     * @param senderBaseRetryIntervalMillis
+     * @param senderMaxRetryIntervalMillis
+     * @param connectionTimeoutMillis
+     * @param readTimeoutMillis
+     * @param ackResponseMode
+     * @param sslEnabled
+     * @param jvmHeapBufferMode
+     * @param fileBackupDir
+     * @return
+     */
     @PluginFactory
     public static FluentdConfig createFluencyConfig(
     		@PluginElement(Server.ELEMENT_TYPE) final Server[] servers,
@@ -87,8 +110,11 @@ public class FluentdConfig implements FluencyConfig {
         return config;
     }
     
+    /**
+     * returns fluency
+     */
     public Fluency makeFluency() {
-    	FluencyBuilderForFluentd builder = Objects.requireNonNullElse(this.fluencyBuilder, new FluencyBuilderForFluentd());
+    	FluencyBuilderForFluentd builder = Objects.nonNull(this.fluencyBuilder) ? this.fluencyBuilder : new FluencyBuilderForFluentd();
     	
     	if (Assert.isNonEmpty(servers)) {
         	List<InetSocketAddress> addresses = new ArrayList<>();

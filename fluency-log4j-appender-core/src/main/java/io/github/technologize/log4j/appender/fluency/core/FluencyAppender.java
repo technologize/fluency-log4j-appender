@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -53,11 +52,20 @@ public class FluencyAppender extends AbstractAppender {
 	private final Map<String, PatternLayout> fieldsParams;
 	
 
+	/**
+	 * @param name
+	 * @param tag
+	 * @param fields
+	 * @param fluencyConfig
+	 * @param filter
+	 * @param layout
+	 * @param ignoreExceptions
+	 */
 	protected FluencyAppender(final String name, final String tag, final Field[] fields,
 			final FluencyConfig fluencyConfig, final Filter filter, final Layout<? extends Serializable> layout,
 			final String ignoreExceptions) {
 		
-		super(name, filter, Objects.requireNonNullElse(layout, PatternLayout.createDefaultLayout()),
+		super(name, filter, Assert.isNonEmpty(layout) ? layout : PatternLayout.createDefaultLayout(),
 				Booleans.parseBoolean(ignoreExceptions, true), Property.EMPTY_ARRAY);
 		
 		/* Tag cannot be Empty */
@@ -78,6 +86,9 @@ public class FluencyAppender extends AbstractAppender {
 		this.fluency = fluencyConfig.makeFluency();
 	}
 
+	/**
+	 * appends the event
+	 */
 	@Override
 	public void append(LogEvent logEvent) {
 		if (this.fluency == null) {
@@ -101,10 +112,10 @@ public class FluencyAppender extends AbstractAppender {
         	logEventData.put("sourceMethod", UNKNOWN);
         	logEventData.put("sourceLine", 0);
 		} else {
-			logEventData.put("sourceFile", Objects.requireNonNullElse(logSource.getFileName(), UNKNOWN));
-			logEventData.put("sourceClass", Objects.requireNonNullElse(logSource.getClassName(), UNKNOWN));
-			logEventData.put("sourceMethod", Objects.requireNonNullElse(logSource.getMethodName(), UNKNOWN));
-			logEventData.put("sourceLine", Objects.requireNonNullElse(logSource.getLineNumber(), 0));
+			logEventData.put("sourceFile", Assert.isNonEmpty(logSource.getFileName()) ? logSource.getFileName() : UNKNOWN);
+			logEventData.put("sourceClass", Assert.isNonEmpty(logSource.getClassName()) ? logSource.getClassName() : UNKNOWN);
+			logEventData.put("sourceMethod", Assert.isNonEmpty(logSource.getMethodName()) ? logSource.getMethodName() : UNKNOWN);
+			logEventData.put("sourceLine", Assert.isNonEmpty(logSource.getLineNumber()) ? logSource.getLineNumber() : 0);
 		}
 
         StringBuilder loggerNameBuilder = new StringBuilder();

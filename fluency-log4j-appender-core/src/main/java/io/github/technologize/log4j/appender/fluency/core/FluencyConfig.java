@@ -25,6 +25,10 @@ public interface FluencyConfig {
 	
 	public static final String ELEMENT_TYPE = "config";
 
+	/**
+	 *  Should create a fluency instance and return it
+	 * @return
+	 */
 	public Fluency makeFluency();
 	
 }

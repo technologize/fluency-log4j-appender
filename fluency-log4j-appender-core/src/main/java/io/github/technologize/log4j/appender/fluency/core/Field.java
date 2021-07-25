@@ -31,8 +31,14 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = Field.PLUGIN_NAME, category = Node.CATEGORY, elementType = Field.ELEMENT_TYPE, printObject = true)
 public class Field {
 
+	/**
+	 * Field plugin name
+	 */
 	public static final String PLUGIN_NAME = "Field";
 	
+	/**
+	 * Field element type
+	 */
 	public static final String ELEMENT_TYPE = "field";
 	
 	private static final Logger LOGGER = StatusLogger.getLogger();
@@ -40,19 +46,37 @@ public class Field {
     private final String name;
     private final String pattern;
 
+    /**
+     * @param name
+     * @param pattern
+     */
     protected Field(final String name, final String pattern) {
         this.name = name;
         this.pattern = pattern;
     }
 
+	/**
+	 * returns field name
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * returns pattern
+	 * @return
+	 */
 	public String getPattern() {
 		return pattern;
 	}
 
+	/**
+	 * Creates field object
+	 * @param name
+	 * @param pattern
+	 * @return
+	 */
 	@PluginFactory
     public static Field createStaticField(
             @PluginAttribute("name") final String name,

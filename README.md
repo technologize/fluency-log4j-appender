@@ -1,6 +1,10 @@
 # log4j2 appenders for Fluentd, Aws S3
 
-`Requires log4j >= 2.11`
+`Minimum Requirements`
+| Dependency      | Version       |
+| :-------------  | :----------:  |
+| Java            | 8             |
+| log4j           | 2.11          |
 
 Add `io.github.technologize` to `packages` in log4j's `Configuration`
 

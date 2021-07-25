@@ -37,15 +37,51 @@ import io.github.technologize.log4j.appender.fluency.core.FluencyConfig;
  * @author Bharat Gadde
  *
  */
-@Plugin(name = AwsS3Config.PLUGIN_TYPE, category = Core.CATEGORY_NAME, elementType = FluencyConfig.ELEMENT_TYPE, printObject = true)
+@Plugin(name = AwsS3Config.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = FluencyConfig.ELEMENT_TYPE, printObject = true)
 public class AwsS3Config implements FluencyConfig {
 	
-	public static final String PLUGIN_TYPE = "AwsS3Config";
+	/**
+	 * Config plugin Name
+	 */
+	public static final String PLUGIN_NAME = "AwsS3Config";
 	
 	private static final StatusLogger LOGGER = StatusLogger.getLogger();
 	
+    /**
+     * builder for fluency
+     */
     private FluencyBuilderForAwsS3 fluencyBuilder;    
     
+    /**
+     * Creates config depending on values given in configurationFile of log4j
+     * 
+     * @param formatType
+     * @param formatCsvColumnNames
+     * @param awsEndpoint
+     * @param awsRegion
+     * @param awsAccessKeyId
+     * @param awsSecretAccessKey
+     * @param senderRetryMax
+     * @param senderRetryIntervalMillis
+     * @param senderMaxRetryIntervalMillis
+     * @param senderRetryFactor
+     * @param senderWorkBufSize
+     * @param compressionEnabled
+     * @param s3KeyPrefix
+     * @param s3KeySuffix
+     * @param zoneOffsetId
+     * @param maxBufferSize
+     * @param bufferChunkInitialSize
+     * @param bufferChunkRetentionSize
+     * @param bufferChunkRetentionTimeMillis
+     * @param flushAttemptIntervalMillis
+     * @param fileBackupDir
+     * @param waitUntilBufferFlushed
+     * @param waitUntilFlusherTerminated
+     * @param jvmHeapBufferMode
+     * @param customS3DestinationDecider
+     * @return
+     */
     @PluginFactory
     public static AwsS3Config createFluencyConfig(
     		@PluginAttribute(value= "formatType", defaultString= "JSONL") final String formatType,
