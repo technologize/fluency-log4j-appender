@@ -78,7 +78,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<finalName>${project.artifactId}-all</finalName>
+							<outputFile>${project.build.directory}/${project.artifactId}-all.jar</outputFile>
 						</configuration>
 					</execution>
 				</executions>
