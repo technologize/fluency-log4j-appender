@@ -15,6 +15,14 @@ Add `io.github.technologize` to `packages` in log4j's `Configuration`
 `tag`: tag refers to tag of fluentd
 
 ```xml
+<dependency>
+  <groupId>io.github.technologize</groupId>
+  <artifactId>fluentd-log4j-appender</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+```xml
 <Configuration strict="true" packages="io.github.technologize">
   <Appenders>
     <Fluentd name="fluentd" tag="yourTag" >
@@ -69,6 +77,14 @@ Add `io.github.technologize` to `packages` in log4j's `Configuration`
 ### Aws S3
 
 `tag`: tag is the name of the Aws S3 bucket
+
+```xml
+<dependency>
+  <groupId>io.github.technologize</groupId>
+  <artifactId>aws-s3-log4j-appender</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
 
 ```xml
 <Configuration strict="true" packages="io.github.technologize">
