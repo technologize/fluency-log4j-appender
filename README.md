@@ -12,9 +12,9 @@ To use these appenders, add `io.github.technologize` to `packages` in log4j's `C
 
 Refer [examples](examples/)
 
-## Fluentd
+Sample log4j config
 
-Add below to the appenders section.
+## Fluentd
 
 ```xml
 <Configuration strict="true" packages="io.github.technologize">
@@ -29,7 +29,7 @@ Add below to the appenders section.
     <Field name="someOtherField">Otherfield %X{traceId}</Field>
     <Field name="lookupField" pattern="%N"/>   
     <!-- 
-      all settings are optional, see FluencyBuilderForFluentd().build(); for default values
+      all settings are optional, see FluencyBuilderForFluentd; for default values
       you can add as may fields as you like (or none at all)
     -->
     <FluentdConfig 
@@ -70,8 +70,6 @@ Add below to the appenders section.
 
 ## Aws S3
 
-Add below to the appenders section.
-
 ```xml
 <Configuration strict="true" packages="io.github.technologize">
   <Appenders>
@@ -92,6 +90,7 @@ Add below to the appenders section.
 
         formatTypes can be CSV, MESSAGE_PACK, JSONL(DEFAULT)
         formatCsvColumnNames are comma seperated Logging info to be present in CSV if format is CSV
+        zoneOffsetId for valid values Refer https://docs.oracle.com/javase/8/docs/api/java/time/ZoneOffset.html#of-java.lang.String-
       -->
       <AwsS3Config
         formatType= "JSONL"
