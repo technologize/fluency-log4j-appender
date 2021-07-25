@@ -21,7 +21,7 @@ limitations under the License.
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.technologize</groupId>
 	<artifactId>fluency-log4j-appender-core</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Fluency Log4j Appender Core</name>
 	<description>Log4j Appender Based on Fluency</description>
 	<url>https://github.com/technologize/fluency-log4j-appender</url>
