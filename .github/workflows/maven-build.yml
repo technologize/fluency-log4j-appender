@@ -30,4 +30,4 @@ jobs:
         with:
           reporter: github-pr-check 
           fail_on_error: true
-          checkstyle_config: google_checks.xml
+          checkstyle_config: sun_checks.xml
