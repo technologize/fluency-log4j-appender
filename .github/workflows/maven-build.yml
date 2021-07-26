@@ -25,3 +25,9 @@ jobs:
         run: mvn --batch-mode clean install
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+      - name: Run java checkstyle
+        uses: nikitasavinov/checkstyle-action@0.4.0
+        with:
+          reporter: github-pr-check 
+          fail_on_error: true
+          checkstyle_config: google_checks.xml
