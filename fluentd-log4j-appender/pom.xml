@@ -21,7 +21,7 @@ limitations under the License.
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.technologize</groupId>
 	<artifactId>fluentd-log4j-appender</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 	<name>FluentD Log4j Appender</name>
 	<description>Log4j appender for sending logs to FluentD</description>
 	<url>https://github.com/technologize/fluency-log4j-appender</url>
@@ -129,26 +129,6 @@ limitations under the License.
 				</executions>
 				<configuration>
 					<source>8</source>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<gpgArguments>
-						<arg>--pinentry-mode</arg>
-						<arg>loopback</arg>
-					</gpgArguments>
 				</configuration>
 			</plugin>
 		</plugins>
