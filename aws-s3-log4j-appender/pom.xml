@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.technologize</groupId>
 	<artifactId>aws-s3-log4j-appender</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 	<name>Aws S3 Log4j Appender</name>
 	<description>Log4j appender for sending logs to AWS S3</description>
 	<url>https://github.com/technologize/fluency-log4j-appender</url>
@@ -110,26 +110,6 @@
 				</executions>
 				<configuration>
 					<source>8</source>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<gpgArguments>
-						<arg>--pinentry-mode</arg>
-						<arg>loopback</arg>
-					</gpgArguments>
 				</configuration>
 			</plugin>
 		</plugins>
